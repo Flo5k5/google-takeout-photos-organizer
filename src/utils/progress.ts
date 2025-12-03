@@ -20,10 +20,6 @@ export class ProgressTracker {
     console.log(chalk.green('\u2713 ') + message);
   }
 
-  logWarning(message: string): void {
-    console.log(chalk.yellow('\u26A0 ') + message);
-  }
-
   logError(message: string): void {
     console.log(chalk.red('\u2717 ') + message);
   }

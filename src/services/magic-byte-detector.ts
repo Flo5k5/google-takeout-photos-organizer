@@ -2,23 +2,19 @@ import fs from 'fs/promises';
 import logger from '../utils/logger.js';
 
 // Magic byte signatures for common image formats
-const SIGNATURES: Record<string, { bytes: number[]; offset?: number; extension: string }[]> = {
-  jpeg: [{ bytes: [0xff, 0xd8, 0xff], offset: 0, extension: '.jpg' }],
-  png: [{ bytes: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], offset: 0, extension: '.png' }],
+const SIGNATURES: Record<string, number[][]> = {
+  jpeg: [[0xff, 0xd8, 0xff]],
+  png: [[0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]],
   gif: [
-    { bytes: [0x47, 0x49, 0x46, 0x38, 0x37, 0x61], offset: 0, extension: '.gif' }, // GIF87a
-    { bytes: [0x47, 0x49, 0x46, 0x38, 0x39, 0x61], offset: 0, extension: '.gif' }, // GIF89a
+    [0x47, 0x49, 0x46, 0x38, 0x37, 0x61], // GIF87a
+    [0x47, 0x49, 0x46, 0x38, 0x39, 0x61], // GIF89a
   ],
-  webp: [
-    { bytes: [0x52, 0x49, 0x46, 0x46], offset: 0, extension: '.webp' }, // RIFF, need to also check WEBP at offset 8
-  ],
+  webp: [[0x52, 0x49, 0x46, 0x46]], // RIFF, need to also check WEBP at offset 8
   tiff: [
-    { bytes: [0x49, 0x49, 0x2a, 0x00], offset: 0, extension: '.tiff' }, // Little-endian (II)
-    { bytes: [0x4d, 0x4d, 0x00, 0x2a], offset: 0, extension: '.tiff' }, // Big-endian (MM)
+    [0x49, 0x49, 0x2a, 0x00], // Little-endian (II)
+    [0x4d, 0x4d, 0x00, 0x2a], // Big-endian (MM)
   ],
-  bmp: [
-    { bytes: [0x42, 0x4d], offset: 0, extension: '.bmp' }, // BM
-  ],
+  bmp: [[0x42, 0x4d]], // BM
 };
 
 // HEIC/HEIF uses ftyp box - need special handling
@@ -57,32 +53,32 @@ async function detectFileType(filePath: string): Promise<string | null> {
     const buffer = await readMagicBytes(filePath, 24);
 
     // Check JPEG
-    if (matchesSignature(buffer, SIGNATURES.jpeg[0].bytes)) {
+    if (matchesSignature(buffer, SIGNATURES.jpeg[0])) {
       return 'jpeg';
     }
 
     // Check PNG
-    if (matchesSignature(buffer, SIGNATURES.png[0].bytes)) {
+    if (matchesSignature(buffer, SIGNATURES.png[0])) {
       return 'png';
     }
 
     // Check GIF
     for (const sig of SIGNATURES.gif) {
-      if (matchesSignature(buffer, sig.bytes)) {
+      if (matchesSignature(buffer, sig)) {
         return 'gif';
       }
     }
 
     // Check WEBP (RIFF at 0 + WEBP at 8)
     if (
-      matchesSignature(buffer, SIGNATURES.webp[0].bytes) &&
+      matchesSignature(buffer, SIGNATURES.webp[0]) &&
       buffer.toString('ascii', 8, 12) === 'WEBP'
     ) {
       return 'webp';
     }
 
     // Check BMP
-    if (matchesSignature(buffer, SIGNATURES.bmp[0].bytes)) {
+    if (matchesSignature(buffer, SIGNATURES.bmp[0])) {
       return 'bmp';
     }
 
@@ -97,7 +93,7 @@ async function detectFileType(filePath: string): Promise<string | null> {
 
     // Check TIFF (also used by DNG, CR2, NEF, ARW)
     for (const sig of SIGNATURES.tiff) {
-      if (matchesSignature(buffer, sig.bytes)) {
+      if (matchesSignature(buffer, sig)) {
         return 'tiff';
       }
     }

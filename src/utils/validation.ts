@@ -1,8 +1,29 @@
 import fs from 'fs-extra';
 import { glob } from 'glob';
+import readline from 'readline';
 import type { ProcessingContext } from '../types/processing.js';
 import { formatBytes, getAvailableDiskSpace } from './file-utils.js';
 import logger from './logger.js';
+
+/**
+ * Prompt user to continue when disk space is insufficient
+ */
+async function promptContinue(estimatedRequired: number, availableSpace: number): Promise<boolean> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(
+      `\nInsufficient disk space! Required: ~${formatBytes(estimatedRequired)}, Available: ${formatBytes(availableSpace)}\nContinue anyway? [y/N] `,
+      (answer) => {
+        rl.close();
+        resolve(answer.trim().toLowerCase() === 'y');
+      }
+    );
+  });
+}
 
 export async function validateEnvironment(context: ProcessingContext): Promise<void> {
   const errors: string[] = [];
@@ -37,9 +58,16 @@ export async function validateEnvironment(context: ProcessingContext): Promise<v
     // Check available disk space
     const availableSpace = await getAvailableDiskSpace(context.outputDir);
     if (availableSpace !== null && availableSpace < estimatedRequired) {
-      logger.warn(
-        `Insufficient disk space! Required: ~${formatBytes(estimatedRequired)}, Available: ${formatBytes(availableSpace)}`
-      );
+      if (process.stdin.isTTY) {
+        const shouldContinue = await promptContinue(estimatedRequired, availableSpace);
+        if (!shouldContinue) {
+          errors.push('Aborted due to insufficient disk space');
+        }
+      } else {
+        logger.warn(
+          `Insufficient disk space! Required: ~${formatBytes(estimatedRequired)}, Available: ${formatBytes(availableSpace)}`
+        );
+      }
     }
   }
 

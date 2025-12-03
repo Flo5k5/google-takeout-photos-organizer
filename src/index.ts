@@ -19,6 +19,20 @@ import { offerCleanup } from './utils/cleanup.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const bundledConfigPath = path.join(__dirname, '../config/default.json');
+
+async function loadDefaultConfig(): Promise<Config> {
+  try {
+    return await fs.readJson(bundledConfigPath);
+  } catch (error) {
+    logger.error('Failed to load bundled default config', {
+      path: bundledConfigPath,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw new Error('Missing bundled default configuration');
+  }
+}
+
 // CLI setup
 program
   .name('google-takeout-photos-organizer')
@@ -30,49 +44,14 @@ program
 
 const cliOptions = program.opts<{ input?: string; output?: string }>();
 
-// Default configuration (embedded for npx compatibility)
-const DEFAULT_CONFIG: Config = {
-  input: {
-    zipDirectory: '.',
-    zipPattern: 'takeout-*.zip',
-  },
-  output: {
-    stagingDir: '.takeout-staging',
-    outputDir: 'Google Photos',
-    byYearSubdir: '',
-    byAlbumSubdir: '',
-    unknownYearFolder: 'unknown',
-  },
-  processing: {
-    concurrency: 5,
-    retryAttempts: 2,
-    retryDelay: 1000,
-    useHardLinks: true,
-    fallbackToCopy: true,
-  },
-  exif: {
-    writeGPS: true,
-    writeDescription: true,
-    writeKeywords: true,
-    writeDateTimeOriginal: true,
-    preserveOriginalFile: false,
-  },
-  logging: {
-    level: 'info',
-    console: true,
-    file: true,
-    logDir: './logs',
-  },
-};
-
 async function loadConfig(): Promise<Config> {
-  let config: Config = { ...DEFAULT_CONFIG };
+  const defaultConfig = await loadDefaultConfig();
+  let config: Config = { ...defaultConfig };
 
   // Try to load config from multiple locations (in order of priority)
   const configPaths = [
     path.join(process.cwd(), 'takeout-config.json'), // User config in cwd
     path.join(process.cwd(), 'config/default.json'), // User config in config dir
-    path.join(__dirname, '../config/default.json'), // Package bundled config
   ];
 
   for (const configPath of configPaths) {

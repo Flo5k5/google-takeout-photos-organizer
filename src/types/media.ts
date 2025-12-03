@@ -7,7 +7,6 @@ export enum ProcessingStatus {
 export interface GoogleMetadata {
   title: string;
   description: string;
-  imageViews?: string;
   photoTakenTime?: {
     timestamp: string;
     formatted: string;
@@ -29,15 +28,6 @@ export interface GoogleMetadata {
     altitude: number;
     latitudeSpan: number;
     longitudeSpan: number;
-  };
-  url?: string;
-  googlePhotosOrigin?: {
-    mobileUpload?: {
-      deviceType?: string;
-      deviceFolder?: {
-        localFolderName?: string;
-      };
-    };
   };
 }
 

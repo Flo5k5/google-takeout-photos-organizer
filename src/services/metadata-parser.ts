@@ -24,26 +24,10 @@ const GeoDataSchema = z
 const GoogleMetadataSchema = z.object({
   title: z.string().min(1),
   description: z.string().default(''),
-  imageViews: z.string().optional(),
   photoTakenTime: TimestampSchema,
   creationTime: TimestampSchema,
   geoData: GeoDataSchema,
   geoDataExif: GeoDataSchema,
-  url: z.string().optional(),
-  googlePhotosOrigin: z
-    .object({
-      mobileUpload: z
-        .object({
-          deviceType: z.string().optional(),
-          deviceFolder: z
-            .object({
-              localFolderName: z.string().optional(),
-            })
-            .optional(),
-        })
-        .optional(),
-    })
-    .optional(),
 });
 
 export async function parseMetadataFile(filePath: string): Promise<GoogleMetadata | null> {
