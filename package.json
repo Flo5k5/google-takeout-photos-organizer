@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "google-takeout-photos-organizer": "./dist/index.js"
+    "google-takeout-photos-organizer": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
