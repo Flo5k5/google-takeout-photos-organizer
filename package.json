@@ -1,0 +1,72 @@
+{
+  "name": "google-takeout-photos-organizer",
+  "version": "1.0.0",
+  "description": "Google Takeout Photos organizer with metadata and EXIF processing",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "google-takeout-photos-organizer": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "check": "npm run lint && npm run format:check && tsc --noEmit"
+  },
+  "keywords": [
+    "google-takeout",
+    "photos",
+    "exif",
+    "organizer",
+    "google-photos",
+    "metadata"
+  ],
+  "author": "Florian NOURRISSE",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flo5k5/google-takeout-photos-organizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Flo5k5/google-takeout-photos-organizer/issues"
+  },
+  "homepage": "https://github.com/Flo5k5/google-takeout-photos-organizer#readme",
+  "files": [
+    "dist",
+    "config"
+  ],
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
+    "exiftool-vendored": "^33.5.0",
+    "extract-zip": "^2.0.1",
+    "fs-extra": "^11.3.0",
+    "glob": "^13.0.0",
+    "p-limit": "^7.2.0",
+    "winston": "^3.18.3",
+    "yauzl": "^3.2.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.10.1",
+    "@types/yauzl": "^2.10.3",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

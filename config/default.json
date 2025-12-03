@@ -1,0 +1,33 @@
+{
+  "input": {
+    "zipDirectory": ".",
+    "zipPattern": "takeout-*.zip"
+  },
+  "output": {
+    "stagingDir": ".takeout-staging",
+    "outputDir": "Google Photos",
+    "byYearSubdir": "",
+    "byAlbumSubdir": "",
+    "unknownYearFolder": "unknown"
+  },
+  "processing": {
+    "concurrency": 5,
+    "retryAttempts": 2,
+    "retryDelay": 1000,
+    "useHardLinks": true,
+    "fallbackToCopy": true
+  },
+  "exif": {
+    "writeGPS": true,
+    "writeDescription": true,
+    "writeKeywords": true,
+    "writeDateTimeOriginal": true,
+    "preserveOriginalFile": false
+  },
+  "logging": {
+    "level": "info",
+    "console": true,
+    "file": true,
+    "logDir": "./logs"
+  }
+}
