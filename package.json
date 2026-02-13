@@ -1,6 +1,6 @@
 {
   "name": "google-takeout-photos-organizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Google Takeout Photos organizer with metadata and EXIF processing",
   "main": "dist/index.js",
   "type": "module",
