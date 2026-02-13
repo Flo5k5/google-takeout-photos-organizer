@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-02-14
+
+### Security
+
+- Fixed high-severity vulnerability in `@isaacs/brace-expansion` ([GHSA-7h2j-956f-4vf2](https://github.com/advisories/GHSA-7h2j-956f-4vf2))
+- Updated dependency from 5.0.0 to 5.0.1 to resolve Uncontrolled Resource Consumption issue
+
 ## [1.0.0] - 2025-12-03
 
 ### Added
